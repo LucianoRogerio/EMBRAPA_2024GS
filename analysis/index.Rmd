@@ -7,5 +7,54 @@ output:
 editor_options:
   chunk_output_type: console
 ---
+### New Imputation for EMBRAPA with DArT Marker only and DArT plus GBS Markers
 
-Welcome to my research website.
+Diversity Array Technology LTDA joint all the genotyping data from the four Genotyping Orders that EMBRAPA requested during these six or seven years in one huge file.
+
+So let's check what we got at the DArT report for EMBRAPA DArT genotyping of 2022
+```{r, eval = F}
+library(genomicMateSelectR)
+dir("data")
+nskipvcf <- 2
+nskipcounts <- 2
+VCF2024 <- read.table(here::here("data", "Report_9669_VCF_Ref_Version6.txt"),
+                      sep = "\t", header = T, skip = nskipvcf, comment.char = "",
+                      check.names = F)
+Counts2024 <- read.table(here::here("data",
+                                    "SEQ_SNPs_counts_0_Target_extend_Ref.csv"),
+                         sep = ",", header = T, skip = nskipcounts, check.names = F)
+Counts2024[1:10,1:50]
+VCF2024[1:10,1:30]
+colnames(VCF2024)[10:ncol(VCF2024)]
+genomicMateSelectR::convertDart2vcf(dartvcfInput = here::here("data", "DArT2022", "Report_9669_VCF_Ref_Version6.txt"),
+                                    dartcountsInput = here::here("data", "DArT2022", "SEQ_SNPs_counts_0_Target_extend_Ref.csv"),
+                                    nskipvcf = 2, nskipcounts = 2,
+                                    outName = "output/DCas24_9669", ncores = 1)
+```
+
+Add the VCF header to the DArT VCF file
+```{r Add VCF header, eval = F}
+system(paste0("bgzip -d -@ 7 output/DArT2022/DCas22_6902_DArTseqLD_AllSites_AllChrom_raw.vcf.gz > ",
+              "output/DArT2022/DCas22_6902_DArTseqLD_AllSites_AllChrom_raw.vcf"))
+
+DArTVCFFileSel <- read.table(file = here::here("output", "DArT2022",
+                                               "DCas22_6902_DArTseqLD_AllSites_AllChrom_raw.vcf"),
+                             sep = "\t", header = T, comment.char = "", check.names = F)
+
+header <- c("##fileformat=VCFv4.0",
+            "##FORMAT=<ID=GT,Number=1,Type=String,Description=\"Genotype\">",
+            "##FORMAT=<ID=AD,Number=.,Type=Integer,Description=\"Allelic depths for the reference and alternate alleles in the order listed\">",
+            "##FORMAT=<ID=DP,Number=1,Type=Integer,Description=\"Read Depth (only filtered reads used for calling)\">",
+            "##FORMAT=<ID=PL,Number=3,Type=Float,Description=\"Normalized, Phred-scaled likelihoods for AA,AB,BB genotypes where A=ref and B=alt; not applicable if site is not biallelic\">")
+
+write_lines(header, file = here::here("output", "DCas22_6902",
+                                      "DCas22_6902_DArTseqLD_AllSites_AllChrom_raw.vcf"),
+            append = F)
+write.table(x = DArTVCFFileSel, file = here::here("output", "DCas22_6902",
+                                                  "DCas22_6902_DArTseqLD_AllSites_AllChrom_raw.vcf"),
+            quote = F, row.names = F, append = T, col.names = T, sep = "\t")
+
+system(paste0("bgzip -c -@ 7 output/DCas22_6902/DCas22_6902_DArTseqLD_AllSites_AllChrom_raw.vcf > ",
+              "output/DCas22_6902/DCas22_6902_DArTseqLD_AllSites_AllChrom_raw.vcf.gz"))
+```
+
