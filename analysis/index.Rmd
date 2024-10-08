@@ -38,7 +38,14 @@ genomicMateSelectR::convertDart2vcf(dartvcfInput = here::here("data", "Report_96
 
 
 ```{r See How many markers are common to both VCF files, eval = F}
-
+library(here)
+system(paste0("bcftools concat ",
+              "--output ",
+              "tassel_embrapa_newfastq.bial.recode.vcf.gz ",
+              "--output-type z --threads 18 ",
+              paste0("tassel_embrapa_newfastq.chr",1:18,
+                     ".bial.recode.vcf.gz",
+                     collapse = " ")))
 
 ```
 
