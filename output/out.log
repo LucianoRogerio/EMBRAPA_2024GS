@@ -1,0 +1,13 @@
+
+VCFtools - 0.1.16
+(C) Adam Auton and Anthony Marcketta 2009
+
+Parameters as interpreted:
+	--gzvcf DCas24_9669.vcf.gz
+
+Using zlib version: 1.2.11
+Warning: Expected at least 2 parts in FORMAT entry: ID=PL,Number=3,Type=Float,Description="Normalized, Phred-scaled likelihoods for AA,AB,BB genotypes where A=ref and B=alt; not applicable if site is not biallelic">
+Warning: Expected at least 2 parts in FORMAT entry: ID=PL,Number=3,Type=Float,Description="Normalized, Phred-scaled likelihoods for AA,AB,BB genotypes where A=ref and B=alt; not applicable if site is not biallelic">
+After filtering, kept 1840 out of 1840 Individuals
+After filtering, kept 12981 out of a possible 12981 Sites
+Run Time = 1.00 seconds
